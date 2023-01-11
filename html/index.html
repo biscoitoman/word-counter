@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Word Counter Test</title>
+        <meta name="A simple word counter test" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <h1>Word Counter test</h1>
+        <div>
+            <textarea id = "text" placeholder="Write some text"></textarea>
+        </div>
+        <div>
+            <button id = "wc-btn" type="button" onclick="requestCountWord()">Count Words</button>
+        </div>
+        <div>
+            <span id = "word-count">Words : </span>
+        </div>
+        <script src="" async defer></script>
+    </body>
+    <script>
+        function requestCountWord(){
+            var text = document.getElementById('text').value;
+            fetch('/v1/counter/word', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "text": text })
+            })
+            .then((response) => {
+                var wcText = document.getElementById('word-count')
+                if(response.status == 422)
+                    wcText.textContent = "Please enter at least one word"
+                else if (response.status == 200){
+                    var json = response.json().then(data => wcText.textContent = "Words:" + data.wordCount );
+                }
+            })
+        }
+    </script>
+    <script>
+        var input = document.getElementById("text");
+        input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("wc-btn").click();
+        }
+        }); 
+    </script>
+</html>
