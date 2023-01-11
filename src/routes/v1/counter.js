@@ -6,3 +6,5 @@ const counterController = new CounterController();
 
 
 counterRouter.post('/word',counterController.word);
+
+module.exports = {counterRouter}
